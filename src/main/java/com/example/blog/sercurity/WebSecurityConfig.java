@@ -1,9 +1,10 @@
 package com.example.blog.sercurity;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.blog.entity.role.RoleName;
+import com.example.blog.exception.AccessDeniedExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -15,14 +16,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class WebSecurityConfig {
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final AuthenticationEntryPointJwt unauthenticatedHandler;
 
-    @Autowired
-    Environment env;
+    private final AccessDeniedExceptionHandler accessDeniedHandler;
+
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, JwtUtils jwtUtils,
+                             AuthenticationEntryPointJwt unauthenticatedHandler,
+                             AccessDeniedExceptionHandler accessDeniedHandler) {
+        this.userDetailsService = userDetailsService;
+        this.jwtUtils = jwtUtils;
+        this.unauthenticatedHandler = unauthenticatedHandler;
+        this.accessDeniedHandler = accessDeniedHandler;
+    }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -46,13 +54,22 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler).and()
+                .exceptionHandling().authenticationEntryPoint(unauthenticatedHandler).and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/user/{userId}")
+                .hasAuthority(RoleName.ROLE_ADMIN.toString())
+                .requestMatchers(HttpMethod.PUT, "/api/user/{userId}")
+                .hasAuthority(RoleName.ROLE_ADMIN.toString())
+                .requestMatchers("/api/user/profile")
+                .hasAnyAuthority(RoleName.ROLE_ADMIN.toString(), RoleName.ROLE_USER.toString())
                 .anyRequest()
-                .permitAll();
+                .authenticated();
+
 
         http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(new AuthTokenFilter( jwtUtils), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new AuthTokenFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

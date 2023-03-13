@@ -8,7 +8,6 @@ import com.example.blog.dto.response.MessageResponse;
 import com.example.blog.sercurity.JwtUtils;
 import com.example.blog.sercurity.UserDetailsImpl;
 import com.example.blog.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

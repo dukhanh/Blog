@@ -1,6 +1,7 @@
 package com.example.blog.entity;
 
 import com.example.blog.entity.audit.UserDateAudit;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,6 +21,7 @@ public class Address extends UserDateAudit {
     private String city;
     private String zipcode;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "address")
     private User user;
 }
