@@ -2,6 +2,8 @@ package com.example.blog.sercurity;
 
 
 
+import com.example.blog.entity.User;
+import com.example.blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;

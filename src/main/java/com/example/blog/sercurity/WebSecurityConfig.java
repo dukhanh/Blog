@@ -47,14 +47,9 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/signin", "/api/refresh_token", "/logout","/api/test/**")
-                .permitAll()
-                .requestMatchers("/api/admin/**)", "/api/signup")
-                .hasAuthority(env.getProperty("role.admin"))
-                .requestMatchers("/api/user/**", "/api/change_password", "/api/common/updateInfor")
-                .hasAnyAuthority(env.getProperty("role.user"), env.getProperty("role.admin"))
+                .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest()
-                .authenticated();
+                .permitAll();
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(new AuthTokenFilter( jwtUtils), UsernamePasswordAuthenticationFilter.class);
