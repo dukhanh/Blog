@@ -1,6 +1,7 @@
 package com.example.blog.entity;
 
-import com.example.blog.entity.audit.UserDateAudit;
+import com.example.blog.entity.audit.DateAudit;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Photo extends UserDateAudit {
+public class Photo extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,6 +22,7 @@ public class Photo extends UserDateAudit {
     private String url;
     @NotBlank
     private String thumbnailUrl;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="album_id")
     private Album album;

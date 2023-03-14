@@ -1,6 +1,6 @@
 package com.example.blog.controller;
 
-import com.example.blog.dto.request.AlbumInfor;
+import com.example.blog.dto.request.AlbumInformation;
 import com.example.blog.dto.response.AlbumResponse;
 import com.example.blog.dto.response.ApiResponse;
 import com.example.blog.service.AlbumService;
@@ -22,13 +22,13 @@ public class AlbumController {
     }
 
     @PostMapping("")
-    public ResponseEntity<AlbumResponse> createAlbum(@RequestBody AlbumInfor createAlbum) {
+    public ResponseEntity<AlbumResponse> createAlbum(@RequestBody AlbumInformation createAlbum) {
         AlbumResponse result = this.albumService.createAlbum(createAlbum);
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateAlbum(@PathVariable Long id, @RequestBody AlbumInfor updateAlbum) {
+    public ResponseEntity<?> updateAlbum(@PathVariable Long id, @RequestBody AlbumInformation updateAlbum) {
         AlbumResponse result = this.albumService.updateAlbum(id, updateAlbum);
         return ResponseEntity.ok(result);
     }

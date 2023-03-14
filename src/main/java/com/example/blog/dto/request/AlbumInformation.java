@@ -6,6 +6,6 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlbumInfor {
+public class AlbumInformation {
     private String title;
 }

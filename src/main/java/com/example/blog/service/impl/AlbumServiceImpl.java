@@ -1,21 +1,19 @@
 package com.example.blog.service.impl;
 
 import com.example.blog.common.MessageContext;
-import com.example.blog.dto.request.AlbumInfor;
+import com.example.blog.dto.request.AlbumInformation;
 import com.example.blog.dto.response.AlbumResponse;
 import com.example.blog.dto.response.ApiResponse;
 import com.example.blog.entity.Album;
 import com.example.blog.entity.User;
-import com.example.blog.entity.role.RoleName;
 import com.example.blog.exception.ResourceNotFoundException;
 import com.example.blog.repository.AlbumRepository;
 import com.example.blog.service.AlbumService;
 import com.example.blog.service.UserService;
+import com.example.blog.utils.PermissionEdit;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,15 +21,17 @@ import java.util.Date;
 @Service
 public class AlbumServiceImpl implements AlbumService {
     private final AlbumRepository albumRepository;
-
     private final UserService userService;
-
     private final ModelMapper modelMapper;
+    private final PermissionEdit permissionEdit;
 
-    public AlbumServiceImpl(AlbumRepository albumRepository, UserService userService, ModelMapper modelMapper) {
+
+    public AlbumServiceImpl(AlbumRepository albumRepository, UserService userService,
+                            ModelMapper modelMapper, PermissionEdit permissionEdit) {
         this.albumRepository = albumRepository;
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.permissionEdit = permissionEdit;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public AlbumResponse createAlbum(AlbumInfor createAlbum) {
+    public AlbumResponse createAlbum(AlbumInformation createAlbum) {
         Album album = this.findAlbumByTitle(createAlbum.getTitle());
         if (album != null) {
             throw new IllegalArgumentException(MessageContext.CONFLICT_ALBUM);
@@ -62,24 +62,25 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public AlbumResponse updateAlbum(Long id, AlbumInfor updateAlbum) {
+    public AlbumResponse updateAlbum(Long id, AlbumInformation updateAlbum) {
         Album oldAlbum = this.findAlbumById(id);
-        Album checkAlbum = this.findAlbumByTitle(updateAlbum.getTitle());
-        if (checkAlbum != null) {
-            throw new IllegalArgumentException(MessageContext.CONFLICT_ALBUM);
+        if (permissionEdit.checkPermissionUpdateDelete(oldAlbum.getUser().getId())) {
+            Album checkAlbum = this.findAlbumByTitle(updateAlbum.getTitle());
+            if (checkAlbum != null) {
+                throw new IllegalArgumentException(MessageContext.CONFLICT_ALBUM);
+            }
+            oldAlbum.setTitle(updateAlbum.getTitle());
+            oldAlbum = this.albumRepository.save(oldAlbum);
+            return this.modelMapper.map(oldAlbum, AlbumResponse.class);
+        } else {
+            throw new AccessDeniedException(MessageContext.ACCESS_DENIED);
         }
-        oldAlbum.setTitle(updateAlbum.getTitle());
-        oldAlbum = this.albumRepository.save(oldAlbum);
-        return this.modelMapper.map(oldAlbum, AlbumResponse.class);
     }
 
     @Override
     public ApiResponse deleteAlbum(Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = this.userService.findByUsername((String) authentication.getPrincipal());
         Album album = this.findAlbumById(id);
-        if (album.getUser().getId().equals(user.getId()) || authentication.getAuthorities()
-                .contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+        if (permissionEdit.checkPermissionUpdateDelete(album.getUser().getId())) {
             this.albumRepository.delete(album);
             return new ApiResponse(new Date(), HttpStatus.OK, MessageContext.DELETE_ALBUM_SUCCESS);
         }

@@ -1,6 +1,6 @@
 package com.example.blog.entity;
 
-import com.example.blog.entity.audit.UserDateAudit;
+import com.example.blog.entity.audit.DateAudit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class Comment extends UserDateAudit {
+public class Comment extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

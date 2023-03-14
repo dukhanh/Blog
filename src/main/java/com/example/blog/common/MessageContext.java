@@ -12,4 +12,7 @@ public class MessageContext {
     public static final String CONFLICT_ALBUM = "The album already exists";
     public static final String ALBUM_NOT_FOUND = "The album not found";
     public static final String DELETE_ALBUM_SUCCESS = "The album has been deleted";
+    public static final String POST_NOT_FOUND = "The post not found";
+    public static final String CONFLICT_POST = "The post already exists";
+    public static final String DELETE_POST_SUCCESS ="The post has been deleted" ;
 }

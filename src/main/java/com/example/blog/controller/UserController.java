@@ -40,4 +40,5 @@ public class UserController {
         userService.assignAdmin(userId);
         return ResponseEntity.ok(new MessageResponse(MessageContext.ASSIGN_ADMIN_SUCCESS));
     }
+
 }

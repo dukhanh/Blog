@@ -1,6 +1,6 @@
 package com.example.blog.entity;
 
-import com.example.blog.entity.audit.UserDateAudit;
+import com.example.blog.entity.audit.DateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class Address extends UserDateAudit {
+public class Address extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
