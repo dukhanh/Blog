@@ -20,5 +20,15 @@ public class ControllerHandleException {
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorMessage> duplicatedResource(IllegalArgumentException ex) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.CONFLICT.value(),
+                new Date(),
+                ex.getMessage(),
+                "Conflict resource"
+        );
+        return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+    }
 
 }

@@ -62,7 +62,7 @@ public class WebSecurityConfig {
                 .hasAuthority(RoleName.ROLE_ADMIN.toString())
                 .requestMatchers(HttpMethod.PUT, "/api/user/{userId}")
                 .hasAuthority(RoleName.ROLE_ADMIN.toString())
-                .requestMatchers("/api/user/profile")
+                .requestMatchers("/api/user/profile", "/api/album")
                 .hasAnyAuthority(RoleName.ROLE_ADMIN.toString(), RoleName.ROLE_USER.toString())
                 .anyRequest()
                 .authenticated();
