@@ -4,6 +4,7 @@ import com.example.blog.common.MessageContext;
 import com.example.blog.dto.request.AlbumInformation;
 import com.example.blog.dto.response.AlbumResponse;
 import com.example.blog.dto.response.ApiResponse;
+import com.example.blog.dto.response.PagedResponse;
 import com.example.blog.entity.Album;
 import com.example.blog.entity.User;
 import com.example.blog.exception.ResourceNotFoundException;
@@ -12,11 +13,17 @@ import com.example.blog.service.AlbumService;
 import com.example.blog.service.UserService;
 import com.example.blog.utils.PermissionEdit;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
@@ -85,6 +92,26 @@ public class AlbumServiceImpl implements AlbumService {
             return new ApiResponse(new Date(), HttpStatus.OK, MessageContext.DELETE_ALBUM_SUCCESS);
         }
         return new ApiResponse(new Date(), HttpStatus.FORBIDDEN, MessageContext.ACCESS_DENIED);
+    }
+
+    @Override
+    public PagedResponse<AlbumResponse> getAllAlbums(String titleSearch, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createAt");
+        Page<Album> albums;
+        if(titleSearch==null){
+            albums = albumRepository.findAll(pageable);
+        }else {
+            albums = albumRepository.findByTitleContains(titleSearch, pageable);
+        }
+        List<Album> content = albums.getNumberOfElements() ==0? Collections.emptyList():albums.getContent();
+        List<AlbumResponse> result = content.stream().map(album -> this.modelMapper.map(album, AlbumResponse.class)).toList();
+        return new PagedResponse<>(result,
+                albums.getNumber(),
+                albums.getSize(),
+                albums.getTotalElements(),
+                albums.getTotalPages(),
+                albums.isFirst(),
+                albums.isLast());
     }
 
 

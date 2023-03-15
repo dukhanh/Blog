@@ -18,6 +18,8 @@ public class Post extends DateAudit {
 
     private String title;
 
+    @Lob
+    @Column( length=512)
     private String body;
 
     @ManyToOne()

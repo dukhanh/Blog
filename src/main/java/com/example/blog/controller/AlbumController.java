@@ -3,9 +3,13 @@ package com.example.blog.controller;
 import com.example.blog.dto.request.AlbumInformation;
 import com.example.blog.dto.response.AlbumResponse;
 import com.example.blog.dto.response.ApiResponse;
+import com.example.blog.dto.response.PagedResponse;
 import com.example.blog.service.AlbumService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.example.blog.utils.AppConstants.DEFAULT_PAGE_NUMBER;
+import static com.example.blog.utils.AppConstants.DEFAULT_PAGE_SIZE;
 
 @RestController
 @RequestMapping("api/album")
@@ -17,8 +21,13 @@ public class AlbumController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAllAlbums() {
-        return null;
+    public ResponseEntity<PagedResponse<AlbumResponse>> getAllAlbums(
+            @RequestParam(value="titleSearch", required = false) String titleSearch,
+            @RequestParam(value = "page", required = false, defaultValue = DEFAULT_PAGE_NUMBER) int page,
+            @RequestParam(value ="size", required = false, defaultValue = DEFAULT_PAGE_SIZE) int size
+    ) {
+        PagedResponse<AlbumResponse> result = this.albumService.getAllAlbums(titleSearch, page, size);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("")

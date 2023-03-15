@@ -1,5 +1,6 @@
 package com.example.blog.dto.response;
 
+import com.example.blog.dto.UserDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,4 +9,5 @@ import lombok.NoArgsConstructor;
 public class AlbumResponse {
     private Long id;
     private String title;
+    private UserDTO user;
 }

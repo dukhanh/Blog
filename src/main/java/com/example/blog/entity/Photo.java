@@ -20,8 +20,6 @@ public class Photo extends DateAudit {
     private String title;
     @NotBlank
     private String url;
-    @NotBlank
-    private String thumbnailUrl;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="album_id")

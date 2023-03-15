@@ -15,4 +15,6 @@ public class MessageContext {
     public static final String POST_NOT_FOUND = "The post not found";
     public static final String CONFLICT_POST = "The post already exists";
     public static final String DELETE_POST_SUCCESS ="The post has been deleted" ;
+    public static final String COMMENT_NOT_FOUND = "The comment not found";
+    public static final String DELETE_COMMENT_SUCCESS = "The comment has been deleted";
 }

@@ -14,4 +14,5 @@ import java.util.List;
 @NoArgsConstructor
 public class UserProfile extends UserDTO{
     private List<Role> roles;
+    private AddressDTO address;
 }
