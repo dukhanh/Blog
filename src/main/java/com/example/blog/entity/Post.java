@@ -2,7 +2,7 @@ package com.example.blog.entity;
 
 import com.example.blog.entity.audit.DateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

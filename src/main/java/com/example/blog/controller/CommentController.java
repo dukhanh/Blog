@@ -5,6 +5,7 @@ import com.example.blog.dto.response.ApiResponse;
 import com.example.blog.dto.response.CommentResponse;
 import com.example.blog.dto.response.PagedResponse;
 import com.example.blog.service.CommentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class CommentController {
     @PostMapping("{postId}")
     public ResponseEntity<CommentResponse> addComment(@PathVariable Long postId, @RequestBody CommentRequest creatComment) {
         CommentResponse result = this.commentService.addComment(postId, creatComment);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @PutMapping("{id}")

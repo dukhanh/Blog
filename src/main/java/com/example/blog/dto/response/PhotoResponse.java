@@ -1,16 +1,19 @@
 package com.example.blog.dto.response;
 
-import com.example.blog.dto.UserDTO;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
-public class AlbumResponse {
+@AllArgsConstructor
+public class PhotoResponse {
     private Long id;
     private String title;
+    private String url;
     private Timestamp createAt;
-    private UserDTO user;
 }

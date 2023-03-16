@@ -50,6 +50,14 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**",
+            "/api/auth/**"
+    };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -57,12 +65,11 @@ public class WebSecurityConfig {
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler).and()
                 .exceptionHandling().authenticationEntryPoint(unauthenticatedHandler).and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/api/user/{userId}")
-                .hasAuthority(RoleName.ROLE_ADMIN.toString())
-                .requestMatchers(HttpMethod.PUT, "/api/user/{userId}")
-                .hasAuthority(RoleName.ROLE_ADMIN.toString())
-                .requestMatchers("/api/user/profile", "/api/album", "/api/post", "/api/comment")
+                .antMatchers("/**/*swagger*/**",
+                        "/v2/api-docs",
+                        "/api/auth/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/album/**", "/api/post/**", "/api/comment/**","/api/photo/**").permitAll()
+                .antMatchers("/api/user/**", "/api/album/**", "/api/post/**", "/api/comment/**","/api/photo/**")
                 .hasAnyAuthority(RoleName.ROLE_ADMIN.toString(), RoleName.ROLE_USER.toString())
                 .anyRequest()
                 .authenticated();

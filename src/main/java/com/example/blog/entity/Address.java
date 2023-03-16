@@ -2,10 +2,11 @@ package com.example.blog.entity;
 
 import com.example.blog.entity.audit.DateAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity

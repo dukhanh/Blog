@@ -1,8 +1,9 @@
 package com.example.blog.entity.role;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Entity
 @Data
